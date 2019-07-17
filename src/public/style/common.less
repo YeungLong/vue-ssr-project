@@ -1,0 +1,69 @@
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, menu, nav, section, time, mark, audio, video, details, summary {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-weight: normal;
+    vertical-align: baseline;
+    background: transparent;
+    font-family:Arial, Helvetica, sans-serif, Ionicons;
+}
+
+html,
+body {
+    background-color: #efeff4;
+    font-size: 14px;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*:not(#addresstextarea,.reason-remark):not(input) {
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(255,0,0,0);
+}
+input{outline: none;}
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+.clearfix {
+  &::after {
+    content: '';
+    clear: both;
+    display: block;
+  }
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/**主题色**/
+@primary-color: #2d8cf0;
+@hover-color: #5cadff;
+@active-color: #2d8cf0;
+
+/**辅助色**/
+@info-color: #2d8cf0;
+@success-color: #19be6b;
+@warning-color: #ff9900;
+@error-color: #ed3f14;
+
+/**背景色**/
+@title-color: #1c2438;
+@content-color: #495060;
+@sub-color: #80848f;
+@disabled-color: #bbbec4;
+@border-color: #dddee1;
+@divider-color: #e9eaec;
+@bg-color: #f8f8f9;
