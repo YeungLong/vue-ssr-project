@@ -3,7 +3,7 @@ import Router from "vue-router";
 Vue.use(Router);
 
 let router = new Router({
-    //mode: "history",
+    mode: "history",
     base: "/",
     routes: [{
         path: "/",
@@ -22,6 +22,10 @@ let router = new Router({
     //     title: "数据生成",
     //     component: () => import("@/views/mock/index.vue")
     // }
+    {
+        path: '*', 
+        redirect: '/'
+    }
     ]
 })
 router.beforeEach((to, from, next) => {
@@ -31,5 +35,6 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
     window.scrollTo(0, 0)
 })
+console.log(router)
 
 export default router

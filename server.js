@@ -1,6 +1,6 @@
-process.env.VUE_ENV = "server"
+process.env.VUE_ENV = "server";
 
-const isPord = process.env.NODE_ENV === "product";
+const isProd = process.env.NODE_ENV === "product";
 
 const fs = require("fs");
 const http = require("http");
@@ -22,7 +22,7 @@ let portUrl = 'http://test.yeung.com/';
 let indexHtml
 let renderer
 
-if (isPord) {
+if (isProd) {
     indexHtml = parseIndex(fs.readFileSync("./dist/index.html"), "utf-8");
     renderer = createRenderer(fs.readFileSync("./dist/main.js"), "utf-8");
 } else {
@@ -32,6 +32,7 @@ if (isPord) {
         },
         indexUpdated: index => {
             indexHtml = parseIndex(index)
+            console.log(indexHtml)
         }
     })
 }
@@ -47,8 +48,8 @@ function createRenderer (bundle) {
 }
 
 function parseIndex (template) {
-  const contentMarker = '<!-- APP -->'
-  const i = template.indexOf(contentMarker)
+  const contentMarker = '<!-- APP -->';
+  const i = template.indexOf(contentMarker);
   return {
     head: template.slice(0, i),
     tail: template.slice(i + contentMarker.length)
@@ -56,12 +57,20 @@ function parseIndex (template) {
 }
 
 const serve = (path, cache) => express.static(resolve(path), {
-    maxAge: cache && isPord ?  60 * 60 * 24 * 30 : 0
+    maxAge: cache && isProd ?  60 * 60 * 24 * 30 : 0
 })
 
 app.use(compression({ threshold: 0}));
 app.use(cookieParser());
 app.use(`${baseUrl}dist`, serve("./dist"));
+app.use(async (ctx, next) => {
+    console.log(ctx.path)
+  if (ctx.path === '/favicon.ico') {
+    await send(ctx, '/favicon.ico', {root: path.join(__dirname, '../')})
+  } else {
+    await next()
+  }
+});
 
 app.get(`${baseUrl}*`, (req, res) => {
     if (!renderer) {
@@ -69,13 +78,13 @@ app.get(`${baseUrl}*`, (req, res) => {
     }
     //console.log(indexHtml)
     //console.log(renderer)
-    res.setHeader("Content-type", "text/html");
+    res.setHeader("Content-Type", "text/html");
     let s = Date.now();
     console.log("请求url", req.url)
-    let context = {url: req.url, cookies: req.cookies};
+    let context = {url: req.url.replace(new RegExp(baseUrl), ''), cookies: req.cookies};
     // 渲染我们的Vue实例作为流
     let renderStream = renderer.renderToStream(context);
-    //console.log(8888)
+    //console.log(renderStream)
     
     // 当块第一次被渲染时
     renderStream.once("data", () => {
@@ -98,7 +107,6 @@ app.get(`${baseUrl}*`, (req, res) => {
                 }</script>`
             )
         };
-
         res.end(indexHtml.tail);
         console.log(`whole request: ${Date.now() - s}`)
     })
@@ -111,7 +119,7 @@ app.get(`${baseUrl}*`, (req, res) => {
     })
 })
 
-const port = process.env.port || 8089;
+const port = process.env.PORT || 8088;
 app.listen(port, () => {
     console.log(`server started at localhost: ${port}`)
 })

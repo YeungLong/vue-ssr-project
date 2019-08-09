@@ -1,7 +1,7 @@
 import  {app, router, store} from "./app";
-
-let isDev = process.env.NODE_ENV !== "product";
 console.log("服务端入口")
+let isDev = process.env.NODE_ENV !== "product";
+
 export default context => {
     console.log("路由")
     const s = isDev && Date.now();

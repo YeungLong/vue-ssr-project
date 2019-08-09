@@ -8,7 +8,7 @@
 export default {
     name: "app",
     beforeMount(){
-      //console.log("初始化路由", this.$router)
+      console.log("初始化路由", this.$router)
     }
 };
 </script>

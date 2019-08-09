@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const isProd = process.env.NODE_ENV === 'production';
 
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -10,7 +10,7 @@ function resolve(dir) {
 let baseUrl = "/";
 
 module.exports = {
-    mode: 'development',
+    mode: isProd?"production": 'development',
     devtool: '#source-map',
     entry: {
         app: "@/client-entry.js",
@@ -20,13 +20,12 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "../dist"),
         publicPath: `${baseUrl}dist/`,
-        filename: "[name].js"
+        filename: "[name].[chunkhash].js"
     },
     module: {
         noParse: /es6-promise\.js$/, // avoid webpack shimming process
         rules: [{
                 test: /\.vue$/,
-                //use: 'vue-loader',
                 use: [{
                     loader: 'vue-loader',
                     options: {
@@ -95,8 +94,6 @@ module.exports = {
     },
     plugins: [
         new VueLoaderPlugin(),
-        // 解决vender后面的hash每次都改变
-        //new webpack.HashedModuleIdsPlugin(),
     ],
     resolve: {
         extensions: [".js", ".vue", ".css", ".less"],

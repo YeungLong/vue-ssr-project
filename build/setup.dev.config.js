@@ -3,15 +3,15 @@ const webpack = require("webpack");
 const MFS = require("memory-fs");
 const clientConfig = require("./webpack.client.config");
 const serverConfig = require("./webpack.server.config");
-//console.log(clientConfig.module.rules);
-console.log(clientConfig.plugins);
+
 module.exports = function setupDevServer (app, opts) {
     clientConfig.entry.app = ["webpack-hot-middleware/client", clientConfig.entry.app];
     clientConfig.output.filename = "[name].js";
-    clientConfig.plugins.push(
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
-    )
+    // console.log("服务端配置")
+    // console.log(serverConfig);
+    // console.log("浏览器端配置");
+    // console.log(clientConfig)
+
     // del-middleware
     const clientCompiler = webpack(clientConfig);
     const devMiddleware = require("webpack-dev-middleware")(clientCompiler, {
@@ -43,8 +43,9 @@ module.exports = function setupDevServer (app, opts) {
     serverCompiler.watch({}, (err, stats) => {
         if (err) throw err;
         stats = stats.toJson();
-        stats.errors.forEach(err => console.log(err));
-        stats.warnings.forEach(warn => console.log(warn));
-        opts.buildUpdated(mfs.readFileSync(outputPath, "utf-8"));
+        stats.errors.forEach(err => console.error(err));
+        stats.warnings.forEach(warn => console.warn(warn));
+        let build = mfs.readFileSync(outputPath, "utf-8");
+        opts.buildUpdated(build);
     })
 }

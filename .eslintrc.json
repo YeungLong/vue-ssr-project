@@ -1,0 +1,32 @@
+{
+    root: true,  //在父级查找
+    parser: 'babel-eslint',  //确定编译器，babel-eslint基于eslint
+    parserOptions: {  //编译器的配置选项
+      sourceType: 'module'   //文件以包模块的方式导入
+    },
+    env: {   //配置环境变量
+      browser: true,   //浏览器环境
+    },
+    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
+    extends: 'standard', //代码风格的检测要求，此处要求为标准水平（打开上面链接可查看标准要求的书写规范）
+    // required to lint *.vue files
+    plugins: [ //添加规范相应文件类型的插件
+      'html'
+    ],
+    // add your custom rules here
+    //为相应的检测添加规则：
+    // "off" -> 0 关闭规则
+    // "warn" -> 1 开启警告规则
+    //"error" -> 2 开启错误规则
+    'rules': {
+      // allow paren-less arrow functions
+      //箭头函数规则（定义箭头函数使不用写括号）
+      'arrow-parens': 0,
+      // allow async-await
+      //异步规则 允许使用异步语法
+      'generator-star-spacing': 0,
+      // allow debugger during development
+      // 开发过程调试规则 开发环境允许debug 生产环境不允许debug
+      'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    }
+  }
