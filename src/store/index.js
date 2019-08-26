@@ -6,7 +6,7 @@ Vue.use(Vuex);
 import app from "./modules/app";
 import user from "./modules/user";
 
-const store = new Vuex.Store({
+let store = new Vuex.Store({
     state: {
 
     },
@@ -25,4 +25,6 @@ const store = new Vuex.Store({
     }
 });
 
-export default store
+export function createStore() {
+    return store
+}

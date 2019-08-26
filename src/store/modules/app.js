@@ -1,8 +1,7 @@
 import Vue from 'vue';
 
 const state = {
-    clientHeight: window && window.document.documentElement.clientHeight
-                  ?window.document.documentElement.clientHeight: window.body.clientHeight,
+    clientHeight: 100,
 };
 
 const getters = {

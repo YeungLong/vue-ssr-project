@@ -1,8 +1,24 @@
 {
-    "presets": ["@babel/preset-env"],
+    "presets": [
+        ["@babel/preset-env", {
+            "modules": false,
+            "targets": {
+                "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+            }
+        }],
+        //["@babel/preset-es2015", { "modules": false }],
+        //"@babel/preset-stage-2"
+    ],
     "plugins": [
+        "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-transform-runtime", 
-        "@babel/plugin-proposal-class-properties"
+        [
+            "component",
+            {
+                "libraryName": "element-ui",
+                "styleLibraryName": "theme-chalk"
+            }
+        ]
     ],
     "comments": false
 }

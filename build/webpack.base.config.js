@@ -11,7 +11,7 @@ let baseUrl = "/";
 
 module.exports = {
     mode: isProd?"production": 'development',
-    devtool: '#source-map',
+    devtool: isProd?false: '#source-map',
     entry: {
         app: "@/client-entry.js",
         "vendor-base": "@/vendors/vendor.base.js",
@@ -23,23 +23,23 @@ module.exports = {
         filename: "[name].[chunkhash].js"
     },
     module: {
-        noParse: /es6-promise\.js$/, // avoid webpack shimming process
+        //noParse: /es6-promise\.js$/, // avoid webpack shimming process
         rules: [{
                 test: /\.vue$/,
-                use: [{
-                    loader: 'vue-loader',
+                use: {
+                    loader: "vue-loader",
                     options: {
                         loaders: {
                             css: 'vue-style-loader!css-loader',
-                            less: 'vue-style-loader!css-loader!less-loader'
+                            less: 'vue-style-loader!css-loader!less-loader',
+                            //sass: 'vue-style-loader!css-loader!sass-loader'
                         },
-                        postLoaders: {
-                            html: 'babel-loader'
+                        compilerOptions: {
+                            preserveWhitespace: false
                         }
                     }
-                }]
-        }, 
-        {
+                },
+        }, {
             test: /\.js$/,
             loader: "babel-loader",
             exclude: /node_modules/
@@ -56,31 +56,62 @@ module.exports = {
         //     include: [resolve("src")],
         //     exclude: /node_modules/
         // },
+        {
+            test: /\.styl(us)?$/,
+            use: [ 'vue-style-loader',
+                'css-loader',
+                'stylus-loader'
+            ]
+        },
          {
             test: /\.css$/,
             use: [
-                //"vue-style-loader",
+                "vue-style-loader",
                 "style-loader",
         　　 　　"css-loader"
        　　 ]
         }, {
             test: /\.less$/,
             use: ['style-loader', 'css-loader', 'less-loader']
-        }, {
-            test: /\.(jpe?g|png|gif)(\?.*)?$/,
-            loader: "url-loader",
-            options: {
-                limit: 1024,
-                name: "images/[name].[ext]"
-            }
-        }, {
-            test: /\.(woff2|eot|ttf|otf|svg)(\?.*)?$/,
-            loader: 'url-loader',
-            options: {
-                limit: 10000,
-                name: "fonts/[name].[ext]"
-            }
-        }, {
+        }, 
+        {
+            oneOf: [{
+                    test: /\.(png|jpg|gif|woff|svg|eot|ttf)$/,
+                    use: [{
+                        loader: "url-loader",
+                        options: {
+                            limit: 8192,
+                            name: "static/media/[name].[hash:8].[ext]",
+                        },
+                    }],
+                },
+                {
+                    test: /\.(png|jpg|gif|woff|svg|eot|ttf)$/,
+                    use: [{
+                        loader: "file-loader",
+                        options: {
+                            name: "static/media/[name].[hash:8].[ext]",
+                        },
+                    }],
+                },
+            ],
+        },
+        // {
+        //     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        //     loader: "url-loader",
+        //     options: {
+        //         limit: 1024,
+        //         name: "images/[name].[ext]"
+        //     }
+        // }, {
+        //     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        //     loader: 'file-loader',
+        //     options: {
+        //         limit: 10000,
+        //         name: "fonts/[name].[ext]"
+        //     }
+        // },
+         {
             test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
             loader: 'url-loader',
             options: {

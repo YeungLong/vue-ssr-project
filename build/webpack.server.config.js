@@ -7,7 +7,7 @@ let env = (process.env.NODE_ENV === "product")?"production": "development";
 
 module.exports = webpackMerge(baseConfig, {
     target: "node",
-    //devtool: false,
+    devtool: "#source-map",
     entry: "./src/server-entry.js",
     output: {
         filename: "server-bundle.js",
@@ -18,7 +18,10 @@ module.exports = webpackMerge(baseConfig, {
             "process.env.NODE_ENV": JSON.stringify(env),
             "process.env.VUE_ENV": '"server"'
         }),
-        //new VueSSRServerPlugin()
+        new VueSSRServerPlugin(),
+        new webpack.optimize.LimitChunkCountPlugin({
+            maxChunks: 1
+        })
     ],
     externals: Object.keys(require('../package.json').dependencies),
 })

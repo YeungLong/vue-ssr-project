@@ -1,15 +1,30 @@
 import Vue from "vue";
 import App from "./App.vue";
-import store from "./store";
-import router from "./router";
+import { createStore } from "./store";
+import { createRouter } from "./router";
 import { sync } from "vuex-router-sync";
-console.log(router)
-sync(store, router);
+//import "bootstrap/dist/css/bootstrap.min.css";
 
-let app = new Vue({
-    router,
-    store,
-    ...App
-});
+// 全局引用ElementUI组件
+//import ElementUI from 'element-ui';
+//import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
+//Vue.use(ElementUI);
 
-export {app, router, store}
+// 封装网络请求，全局用$http引用
+// import request from "./server/request.js";
+// Vue.prototype.$http = request;
+
+
+export function createApp() {
+    let router = createRouter();
+    let store = createStore();
+    sync(store, router);
+
+    let app = new Vue({
+        router,
+        store,
+        render: (h) => h(App)
+    });
+
+    return  {app, router, store}
+}

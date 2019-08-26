@@ -19,32 +19,33 @@ const app = express();
 let baseUrl = "/";
 let portUrl = 'http://test.yeung.com/';
 
-let indexHtml
+
 let renderer
+let readyPromise
+const templatePath = resolve("./index.html");
 
 if (isProd) {
-    indexHtml = parseIndex(fs.readFileSync("./dist/index.html"), "utf-8");
-    renderer = createRenderer(fs.readFileSync("./dist/main.js"), "utf-8");
+    let template = fs.readFileSync(templatePath, "utf-8");
+    let clientManifest = require("./dist/vue-srr-client-manifest.json");
+    let bundle = require("./dist/vue-srr-server-bundle.json");
+    renderer = createRenderer(bundle, {template, clientManifest});
 } else {
-    require("./build/setup.dev.config")(app, {
-        buildUpdated: bundle => {
-            renderer = createRenderer(bundle)
-        },
-        indexUpdated: index => {
-            indexHtml = parseIndex(index)
-            console.log(indexHtml)
-        }
+    readyPromise = require("./build/setup.dev.config")(app, templatePath, (bundle, options) => {
+        renderer = createRenderer(bundle, options);
+        console.log("ssr", renderer);
     })
 }
 
-function createRenderer (bundle) {
+function createRenderer (bundle, options) {
   // https://github.com/vuejs/vue/blob/next/packages/vue-server-renderer/README.md#why-use-bundlerenderer
-  return require('vue-server-renderer').createBundleRenderer(bundle, {
+  return require('vue-server-renderer').createBundleRenderer(bundle, Object.assign(options, {
+    basedir: resolve("./dist"),
+    runInNewContext: false,
     cache: new LRU({
       max: 1000,
       maxAge: 1000 * 60 * 15
     })
-  })
+  }))
 }
 
 function parseIndex (template) {
@@ -63,63 +64,42 @@ const serve = (path, cache) => express.static(resolve(path), {
 app.use(compression({ threshold: 0}));
 app.use(cookieParser());
 app.use(`${baseUrl}dist`, serve("./dist"));
-app.use(async (ctx, next) => {
-    console.log(ctx.path)
-  if (ctx.path === '/favicon.ico') {
-    await send(ctx, '/favicon.ico', {root: path.join(__dirname, '../')})
-  } else {
-    await next()
-  }
-});
 
-app.get(`${baseUrl}*`, (req, res) => {
-    if (!renderer) {
-        return res.end("'waiting for compilation... refresh in a moment.")
-    }
-    //console.log(indexHtml)
-    //console.log(renderer)
+
+function render(req, res) {
+    // if (!renderer) {
+    //     return res.end("'waiting for compilation... refresh in a moment.")
+    // }
+    console.log("开始渲染")
     res.setHeader("Content-Type", "text/html");
     let s = Date.now();
     console.log("请求url", req.url)
-    let context = {url: req.url.replace(new RegExp(baseUrl), ''), cookies: req.cookies};
+    let context = {url: req.url, cookies: req.cookies};
     // 渲染我们的Vue实例作为流
-    let renderStream = renderer.renderToStream(context);
-    //console.log(renderStream)
-    
-    // 当块第一次被渲染时
-    renderStream.once("data", () => {
-        // 将预先的HTML写入响应
-        //console.log(65656)
-        //console.log(indexHtml.head)
-        res.write(indexHtml.head);
-    })
-    //console.log(renderStream)
-    // 每当新的块被渲染
-    renderStream.on("data", chunk => {
-        res.write(chunk)
-    })
-    // 当所有的块被渲染完成
-    renderStream.on("end", () => {
-        // 当vuex初始状态存在
-        if (context.initialState) {
-            res.write(`<script>window.__INITIAL_STATE__=${
-                serialize(context.initialState, { isJSON: true })
-                }</script>`
-            )
-        };
-        res.end(indexHtml.tail);
-        console.log(`whole request: ${Date.now() - s}`)
-    })
-    // 当渲染出错时
-    renderStream.on("error", err => {
-        if (err && err.code === '404') {
-            res.status(404).end('404 | Page Not Found')
+    //console.log(renderer)
+    renderer.renderToString(context, (err, html) => {
+        console.log("err", err);
+        //console.log("html", html);
+        if (err) {
+          if (err && err.code === '404') {
+              res.status(404).end('404 | Page Not Found')
+          } else {
+            res.status(500).end("Internal Error 500");
+          }
         }
-        res.status(500).end("Internal Error 500");
-    })
-})
+        res.send(html)
+        console.log(`whole request: ${Date.now() - s}`)
+    });
+}
 
-const port = process.env.PORT || 8088;
+app.get(`${baseUrl}*`, isProd?render: (req, res) => { 
+        readyPromise.then(() => {
+            render(req, res)
+        })
+    }
+);
+
+const port = process.env.PORT || 8089;
 app.listen(port, () => {
     console.log(`server started at localhost: ${port}`)
 })
