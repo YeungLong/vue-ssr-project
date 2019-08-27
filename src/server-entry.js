@@ -8,11 +8,6 @@ export default context => {
         console.log("路由", context.url)
         const s = isDev && Date.now();
         router.push(context.url);
-        //let matchedComponents = router.getMatchedComponents();
-
-        // if (!matchedComponents.length) {
-        //     return Promise.reject({code: "404"})
-        // };
 
         router.onReady(() => {
             const matchedComponents = router.getMatchedComponents();

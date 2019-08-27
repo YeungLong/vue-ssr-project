@@ -23,7 +23,9 @@ let portUrl = 'http://test.yeung.com/';
 let renderer
 let readyPromise
 const templatePath = resolve("./index.html");
-
+if (process.BROWSER_BUILD) {
+  require('external_library')
+}
 if (isProd) {
     let template = fs.readFileSync(templatePath, "utf-8");
     let clientManifest = require("./dist/vue-srr-client-manifest.json");
@@ -32,7 +34,7 @@ if (isProd) {
 } else {
     readyPromise = require("./build/setup.dev.config")(app, templatePath, (bundle, options) => {
         renderer = createRenderer(bundle, options);
-        console.log("ssr", renderer);
+        //console.log("ssr", renderer);
     })
 }
 

@@ -13,6 +13,30 @@ module.exports = webpackMerge(baseConfig, {
         filename: "server-bundle.js",
         libraryTarget: 'commonjs2' // 此处告知 server bundle 使用 Node 风格导出模块(Node-style exports)
     },
+    module: {
+        rules: [
+          {
+            test: /\.styl(us)?$/,
+            use: [
+              'vue-style-loader',
+              {
+                loader: 'css-loader'
+              },
+              'stylus-loader'
+            ],
+          },
+          {
+            test: /\.(le|c)ss$/,
+            use: [
+              'vue-style-loader',
+              {
+                loader: 'css-loader'
+              },
+              'less-loader',
+            ],
+          }
+        ]
+    },
     plugins: [
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(env),

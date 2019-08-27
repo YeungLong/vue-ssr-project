@@ -5,10 +5,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
 const baseConfig = require("./webpack.base.config.js");
 const package = require("../package.json");
-
+const isProd = process.env.NODE_ENV === 'production';
 let env = "development";
 
 if (process.env.NODE_ENV === "product") {
@@ -16,7 +15,36 @@ if (process.env.NODE_ENV === "product") {
 }
 
 let config = webpackMerge(baseConfig, {
+    module: {
+        rules: [
+          {
+            test: /\.styl(us)?$/,
+            use: [
+              isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+              {
+                loader: 'css-loader'
+              },
+              'stylus-loader'
+            ],
+          },
+          {
+            test: /\.(le|c)ss$/,
+            use: [
+              isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+              {
+                loader: 'css-loader'
+              },
+              'less-loader',
+            ],
+          }
+        ]
+    },
     plugins: [
+        // webpack 4.0版本替代ExtractTextPlugin的配置
+        new MiniCssExtractPlugin({
+          filename: isProd ? '[name].[chunkhash:8].css' : '[name].css',
+          chunkFilename: isProd ?  '[id].[chunkhash:8].css': '[id].css',
+        }),
         // 编译时可以配置的全局常量插件
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(env),
@@ -63,11 +91,6 @@ let config = webpackMerge(baseConfig, {
 })
 
 if (process.env.NODE_ENV === "product") {
-    // webpack 4.0版本替代ExtractTextPlugin的配置
-    config.plugins.push(new MiniCssExtractPlugin({
-          filename: 'styles.[contenthash:8].css'
-        })
-    );
     config.optimization.minimizer = [new UglifyJsPlugin()];
 }
 //console.log(config.plugins)

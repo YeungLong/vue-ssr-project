@@ -3,16 +3,15 @@ import App from "./App.vue";
 import { createStore } from "./store";
 import { createRouter } from "./router";
 import { sync } from "vuex-router-sync";
-//import "bootstrap/dist/css/bootstrap.min.css";
 
 // 全局引用ElementUI组件
-//import ElementUI from 'element-ui';
-//import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
-//Vue.use(ElementUI);
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
+Vue.use(ElementUI);
 
 // 封装网络请求，全局用$http引用
-// import request from "./server/request.js";
-// Vue.prototype.$http = request;
+import request from "./server/request.js";
+Vue.prototype.$http = request;
 
 
 export function createApp() {
