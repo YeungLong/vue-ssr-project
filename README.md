@@ -11,6 +11,9 @@ yann run start
 yarn run build
 打包完成后根目录下的dist目录中的文件为全部打包好的资源
 
+## UI组件库
+https://element.eleme.cn/#/zh-CN
+
 ## 文件结构 
 ├─build wepback配置文件及开发服务器配置文件
 │      setup.dev.config.js 开发服务器配置文件
