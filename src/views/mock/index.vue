@@ -60,7 +60,7 @@
 </script>
 
 <style lang='less' scoped>
-	@import '../../public/style/common.less';
+	@import '../../public/style/variable.less';
 	.content {
 		width: 200px;
 		margin: 10px auto;

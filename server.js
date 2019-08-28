@@ -23,9 +23,7 @@ let portUrl = 'http://test.yeung.com/';
 let renderer
 let readyPromise
 const templatePath = resolve("./index.html");
-if (process.BROWSER_BUILD) {
-  require('external_library')
-}
+
 if (isProd) {
     let template = fs.readFileSync(templatePath, "utf-8");
     let clientManifest = require("./dist/vue-srr-client-manifest.json");
@@ -69,9 +67,9 @@ app.use(`${baseUrl}dist`, serve("./dist"));
 
 
 function render(req, res) {
-    // if (!renderer) {
-    //     return res.end("'waiting for compilation... refresh in a moment.")
-    // }
+    if (!renderer) {
+        return res.end("'waiting for compilation... refresh in a moment.")
+    }
     console.log("开始渲染")
     res.setHeader("Content-Type", "text/html");
     let s = Date.now();
@@ -81,7 +79,7 @@ function render(req, res) {
     //console.log(renderer)
     renderer.renderToString(context, (err, html) => {
         console.log("err", err);
-        //console.log("html", html);
+        // console.log("html", html);
         if (err) {
           if (err && err.code === '404') {
               res.status(404).end('404 | Page Not Found')
@@ -90,7 +88,7 @@ function render(req, res) {
           }
         }
         res.send(html)
-        console.log(`whole request: ${Date.now() - s}`)
+        console.log(`whole request: ${Date.now() - s}ms`)
     });
 }
 
@@ -101,7 +99,7 @@ app.get(`${baseUrl}*`, isProd?render: (req, res) => {
     }
 );
 
-const port = process.env.PORT || 8089;
+const port = process.env.PORT || 8088;
 app.listen(port, () => {
     console.log(`server started at localhost: ${port}`)
 })

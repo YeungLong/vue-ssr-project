@@ -8,7 +8,7 @@ let env = (process.env.NODE_ENV === "product")?"production": "development";
 module.exports = webpackMerge(baseConfig, {
     target: "node",
     devtool: "#source-map",
-    entry: "./src/server-entry.js",
+    entry: "@/server-entry.js",
     output: {
         filename: "server-bundle.js",
         libraryTarget: 'commonjs2' // 此处告知 server bundle 使用 Node 风格导出模块(Node-style exports)

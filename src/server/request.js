@@ -1,6 +1,6 @@
 import axios from "axios";
 import qs from "qs";
-import {Message,Loading} from 'element-ui'
+import {Message, Loading} from 'element-ui'
 
 const Axios = axios.create({
     baseURL: "/",

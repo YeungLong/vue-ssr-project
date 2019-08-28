@@ -6,15 +6,15 @@
 
 <script>
 export default {
-    //name: "app",
-    // beforeMount(){
-    //   console.log("初始化路由")
-    // }
+    name: "app",
+    beforeMount(){
+      console.log("初始化路由")
+    }
 };
 </script>
 
-<style lang="less" scoped>
-   // @import './public/style/common.less';
+<style lang="less">
+    @import './public/style/common.less';
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
