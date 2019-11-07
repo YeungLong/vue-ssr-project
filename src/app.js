@@ -14,6 +14,10 @@ import request from "./server/request.js";
 Vue.prototype.$http = request;
 
 
+// 全局引入input按键组件
+// import Directions from "./plugins/directions";
+// Vue.use(Directions);
+
 export function createApp() {
     let router = createRouter();
     let store = createStore();

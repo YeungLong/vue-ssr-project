@@ -12,6 +12,7 @@ const compression = require("compression");
 const serialize = require("serialize-javascript");
 const proxy = require("http-proxy-middleware");
 const cookieParser = require("cookie-parser");
+const open = require('open');
 const resolve = file => path.resolve(__dirname, file);
 
 const app = express();
@@ -27,7 +28,7 @@ const templatePath = resolve("./index.html");
 if (isProd) {
     let template = fs.readFileSync(templatePath, "utf-8");
     let clientManifest = require("./dist/vue-srr-client-manifest.json");
-    let bundle = require("./dist/vue-srr-server-bundle.json");
+    let bundle = require("./dist/vue-srr-server-bundle.json"); 
     renderer = createRenderer(bundle, {template, clientManifest});
 } else {
     readyPromise = require("./build/setup.dev.config")(app, templatePath, (bundle, options) => {
@@ -36,6 +37,7 @@ if (isProd) {
     })
 }
 
+// vue服务端渲染组件
 function createRenderer (bundle, options) {
   // https://github.com/vuejs/vue/blob/next/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return require('vue-server-renderer').createBundleRenderer(bundle, Object.assign(options, {
@@ -68,7 +70,7 @@ app.use(`${baseUrl}dist`, serve("./dist"));
 
 function render(req, res) {
     if (!renderer) {
-        return res.end("'waiting for compilation... refresh in a moment.")
+        return res.end("'waiting for compilation... refresh in a moment.");
     }
     console.log("开始渲染")
     res.setHeader("Content-Type", "text/html");
@@ -88,6 +90,8 @@ function render(req, res) {
           }
         }
         res.send(html)
+        console.log("浏览器路由", req.url);
+        //open(req.url)
         console.log(`whole request: ${Date.now() - s}ms`)
     });
 }
@@ -99,6 +103,7 @@ app.get(`${baseUrl}*`, isProd?render: (req, res) => {
     }
 );
 
+// 设置监听端口
 const port = process.env.PORT || 8088;
 app.listen(port, () => {
     console.log(`server started at localhost: ${port}`)

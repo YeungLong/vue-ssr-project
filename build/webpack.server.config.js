@@ -1,13 +1,15 @@
 const path = require("path");
 const webpack = require("webpack");
 const webpackMerge = require("webpack-merge");
-const baseConfig = require("./webpack.base.config.js");
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
+
+const baseConfig = require("./webpack.base.config.js");
+
 let env = (process.env.NODE_ENV === "product")?"production": "development";
 
 module.exports = webpackMerge(baseConfig, {
     target: "node",
-    devtool: "#source-map",
+    devtool: '#source-map',
     entry: "@/server-entry.js",
     output: {
         filename: "server-bundle.js",

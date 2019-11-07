@@ -1,3 +1,6 @@
+/* 
+ * 浏览器端入口 
+ */
 //import 'es6-promise/auto'
 import Vue from 'vue'
 import { createApp } from './app'
@@ -5,7 +8,7 @@ import { createApp } from './app'
 // a global mixin that calls `asyncData` when a route component's params change
 Vue.mixin({
     beforeRouteUpdate (to, from, next) {
-      const { asyncData } = this.$options
+      const { asyncData } = this.$options;
       if (asyncData) {
         asyncData({
           store: this.$store,

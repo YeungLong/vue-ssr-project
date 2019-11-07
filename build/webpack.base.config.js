@@ -2,7 +2,9 @@ const webpack = require("webpack");
 const path = require("path");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+
 const isProd = process.env.NODE_ENV === 'production';
+
 function resolve(dir) {
     return path.join(__dirname, dir)
 };
@@ -11,7 +13,7 @@ let baseUrl = "/";
 
 module.exports = {
     mode: isProd?"production": 'development',
-    devtool: isProd?false: '#source-map',
+    devtool: isProd?false: '##cheap-module-source-map',
     entry: {
         app: "@/client-entry.js",
         "vendor-base": "@/vendors/vendor.base.js",
