@@ -14,6 +14,7 @@ const proxy = require("http-proxy-middleware");
 const cookieParser = require("cookie-parser");
 const open = require('open');
 const resolve = file => path.resolve(__dirname, file);
+const port = process.env.PORT || 8088;
 
 const app = express();
 
@@ -91,7 +92,7 @@ function render(req, res) {
         }
         res.send(html)
         console.log("浏览器路由", req.url);
-        //open(req.url)
+        //open('http://localhost:' + port)
         console.log(`whole request: ${Date.now() - s}ms`)
     });
 }
@@ -104,7 +105,6 @@ app.get(`${baseUrl}*`, isProd?render: (req, res) => {
 );
 
 // 设置监听端口
-const port = process.env.PORT || 8088;
 app.listen(port, () => {
     console.log(`server started at localhost: ${port}`)
 })
