@@ -13,7 +13,7 @@ let baseUrl = "/";
 
 module.exports = {
     mode: isProd?"production": 'development',
-    devtool: isProd?false: '##cheap-module-source-map',
+    devtool: isProd?false: '#cheap-module-source-map',
     entry: {
         app: "@/client-entry.js",
         "vendor-base": "@/vendors/vendor.base.js",
@@ -23,7 +23,8 @@ module.exports = {
         path: path.resolve(__dirname, "../dist"),
         publicPath: `${baseUrl}dist/`,
         //globalObject: 'this',
-        filename: "[name].[hash].js"
+        filename: "[name].[hash].js",
+        chunkFilename: "[name].[contenthash:8].js"
     },
     module: {
         noParse: /es6-promise\.js$/, // avoid webpack shimming process

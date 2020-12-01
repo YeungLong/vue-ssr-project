@@ -62,7 +62,7 @@ let config = webpackMerge(baseConfig, {
         // }),
         new VueSSRClientPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        //new webpack.HashedModuleIdsPlugin(),
+        new webpack.HashedModuleIdsPlugin(),
     ],
     // webpack 4.0版本替代CommonsChunkPlugin的配置
     optimization: {
@@ -74,11 +74,11 @@ let config = webpackMerge(baseConfig, {
             maxInitialRequests: 3,
             automaticNameDelimiter: '~',//自动命名连接符
             cacheGroups: {
-                // vendors: {
-                //     test: /[\\/]node_modules[\\/]/,
-                //     minChunks: 1,//敲黑板
-                //     priority: -10//优先级更高
-                // },
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    minChunks: 1,//敲黑板
+                    priority: -10//优先级更高
+                },
                 default: {
                     test: /[\\/]src[\\/]js[\\/]/,
                     minChunks: 2,//一般为非第三方公共模块
